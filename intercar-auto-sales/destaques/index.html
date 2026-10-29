@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ffffff">
+  <title>Intercar · Prévia dos destaques</title>
+  <link rel="icon" href="img/logo.svg">
+  <style>
+    :root {
+      --red: #e3262c;
+      --ink: #111;
+      --soft: #737373;
+      --line: #e6e6e6;
+      --ease-out: cubic-bezier(.23, 1, .32, 1);
+      --ease-drawer: cubic-bezier(.32, .72, 0, 1);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      color: var(--ink);
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; height: 100%; background: #fff; }
+    body { overscroll-behavior: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+    img { display: block; }
+
+    /* No celular o app ocupa a tela; no computador, uma moldura de celular. */
+    .stage { min-height: 100%; display: flex; justify-content: center; }
+    .phone { position: relative; width: 100%; max-width: 430px; min-height: 100dvh; overflow: hidden; background: #fff; }
+    @media (min-width: 700px) {
+      body { background: #ececec; }
+      .stage { align-items: center; padding: 32px 0; min-height: 100vh; }
+      .phone { width: 390px; height: 844px; min-height: 0; border-radius: 48px; box-shadow: 0 0 0 10px #111, 0 40px 90px rgba(0, 0, 0, .28); overflow-y: auto; scrollbar-width: none; }
+      .phone::-webkit-scrollbar { display: none; }
+      .desk-note { display: block !important; }
+    }
+    .desk-note { display: none; position: fixed; left: 32px; bottom: 28px; max-width: 280px; color: #666; font-size: 14px; line-height: 1.45; }
+    .desk-note b { color: #111; }
+
+    /* Perfil */
+    .preview-pill { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: center; gap: 8px; height: 34px; background: #111; color: #fff; font-size: 12.5px; font-weight: 600; letter-spacing: .01em; }
+    .preview-pill i { width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+    .topbar { display: flex; align-items: center; justify-content: space-between; height: 52px; padding: 0 16px; }
+    .topbar b { font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+    .topbar svg { width: 24px; height: 24px; }
+    .head { display: grid; grid-template-columns: 88px 1fr; gap: 24px; align-items: center; padding: 6px 16px 0; }
+    .avatar { width: 88px; height: 88px; border-radius: 50%; padding: 3px; background: conic-gradient(from 210deg, var(--red), #f0cf59, var(--red)); }
+    .avatar div { width: 100%; height: 100%; border-radius: 50%; border: 3px solid #fff; background: #111; display: grid; place-items: center; }
+    .avatar img { width: 62%; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; font-size: 13px; color: #262626; }
+    .stats b { display: block; font-size: 16.5px; font-weight: 700; color: var(--ink); }
+    .bio { padding: 12px 16px 0; font-size: 14px; line-height: 1.38; }
+    .bio b { font-weight: 600; }
+    .bio .link { color: #00376b; font-weight: 600; }
+    .actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 14px 16px 0; }
+    .actions button { height: 34px; border-radius: 9px; background: #efefef; font-size: 13.5px; font-weight: 600; transition: transform 160ms var(--ease-out), background 160ms ease; }
+    .actions button.primary { background: var(--red); color: #fff; }
+    .actions button:active { transform: scale(.97); }
+
+    .hl-row { display: flex; gap: 14px; overflow-x: auto; padding: 18px 16px 8px; scroll-snap-type: x proximity; scroll-padding-inline: 16px; scrollbar-width: none; }
+    .hl-row::-webkit-scrollbar { display: none; }
+    .hl { flex: none; width: 70px; text-align: center; scroll-snap-align: start; }
+    .hl .ring { width: 70px; height: 70px; border-radius: 50%; padding: 2px; background: #dbdbdb; transition: transform 160ms var(--ease-out); }
+    .hl .ring img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #fff; object-fit: cover; }
+    .hl:active .ring { transform: scale(.94); }
+    .hl span { display: block; margin-top: 6px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hl.new .ring { background: conic-gradient(from 200deg, var(--red), #f0cf59, var(--red)); }
+
+    .howto { margin: 18px 16px 0; padding: 16px 18px; border-radius: 16px; background: #f5f5f4; font-size: 13.5px; line-height: 1.5; color: #333; }
+    .howto b { display: block; margin-bottom: 6px; font-size: 14.5px; color: var(--ink); }
+    .howto ul { margin: 0; padding-left: 18px; }
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; margin-top: 18px; border-top: 1px solid var(--line); }
+    .tabs div { display: grid; place-items: center; height: 44px; color: #9b9b9b; }
+    .tabs div.on { color: var(--ink); box-shadow: inset 0 -1px 0 var(--ink); }
+    .tabs svg { width: 22px; height: 22px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .grid button { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: #eee; }
+    .grid img { width: 100%; height: 100%; object-fit: cover; transition: transform 300ms var(--ease-out); }
+    .grid button:active img { transform: scale(.97); }
+    .foot { padding: 22px 16px 40px; text-align: center; color: #6b6b6b; font-size: 12px; line-height: 1.5; }
+    .foot b { font-family: "Arial Black", sans-serif; letter-spacing: -.03em; color: #111; }
+
+    /* Visualizador de Stories */
+    .viewer { position: fixed; inset: 0; z-index: 50; display: none; background: #000; touch-action: none; }
+    @media (min-width: 700px) { .viewer { position: absolute; border-radius: 48px; overflow: hidden; } .phone.locked { overflow: hidden; } }
+    .viewer.open { display: block; }
+    .card { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; will-change: transform, opacity; }
+    .frame { position: relative; width: min(100%, calc(100dvh * 9 / 16)); aspect-ratio: 9 / 16; max-height: 100%; overflow: hidden; border-radius: 10px; background: #111; }
+    @media (min-width: 700px) { .frame { width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; } }
+    .frame img.story { width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+    .frame::before { content: ""; position: absolute; inset: 0 0 auto; height: 110px; z-index: 1; background: linear-gradient(180deg, rgba(0, 0, 0, .38), transparent); pointer-events: none; }
+    .bars { position: absolute; z-index: 2; top: 10px; left: 8px; right: 8px; display: flex; gap: 3px; }
+    .bars span { flex: 1; height: 2.5px; border-radius: 2px; background: rgba(255, 255, 255, .35); overflow: hidden; }
+    .bars span i { display: block; height: 100%; width: 100%; background: #fff; transform: scaleX(0); transform-origin: left; }
+    .vhead { position: absolute; z-index: 2; top: 22px; left: 10px; right: 6px; display: flex; align-items: center; gap: 9px; color: #fff; }
+    .vhead .mini { width: 32px; height: 32px; border-radius: 50%; background: #111; display: grid; place-items: center; box-shadow: 0 0 0 1px rgba(255, 255, 255, .25); }
+    .vhead .mini img { width: 64%; }
+    .vhead b { font-size: 13.5px; font-weight: 600; }
+    .vhead em { font-style: normal; font-size: 13.5px; opacity: .72; }
+    .vhead .sp { flex: 1; }
+    .vhead button { display: grid; place-items: center; width: 40px; height: 40px; color: #fff; }
+    .vhead svg { width: 26px; height: 26px; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .4)); }
+    .paused-tag { position: absolute; z-index: 2; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(.96); opacity: 0; padding: 8px 14px; border-radius: 999px; background: rgba(0, 0, 0, .5); color: #fff; font-size: 12.5px; font-weight: 600; transition: opacity 160ms ease, transform 160ms var(--ease-out); pointer-events: none; }
+    .viewer.hold .paused-tag { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    .reply { position: absolute; z-index: 2; left: 12px; right: 12px; bottom: max(14px, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 10px; }
+    .reply div { flex: 1; height: 44px; border-radius: 999px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .55); color: rgba(255, 255, 255, .85); font-size: 14px; display: flex; align-items: center; padding: 0 18px; }
+    .reply svg { width: 26px; height: 26px; color: #fff; }
+    @media (min-width: 700px) { .reply { display: none; } }
+    @media (max-aspect-ratio: 9/17.5) { .reply { display: flex; } .frame { border-radius: 10px; } }
+    .side-hint { position: absolute; z-index: 3; top: 0; bottom: 0; width: 30%; }
+    .side-hint.l { left: 0; } .side-hint.r { right: 0; width: 70%; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card { transition: opacity 200ms ease !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="phone" id="phone">
+      <div class="preview-pill"><i></i>Prévia para aprovação · ainda não publicado</div>
+      <div class="topbar">
+        <b>intercarautosales</b>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </div>
+      <div class="head">
+        <div class="avatar"><div><img src="img/logo.svg" alt="Intercar"></div></div>
+        <div class="stats"><span><b>363</b>posts</span><span><b>3,525</b>followers</span><span><b>2</b>locations</span></div>
+      </div>
+      <div class="bio">
+        <b>Intercar Auto Sales | Used Cars MA</b><br>
+        Used cars in Everett &amp; Peabody, MA<br>
+        Financing with Passport, ITIN or SSN<br>
+        EN · PT · ES | WhatsApp ↓<br>
+        <span class="link">Inventory, financing &amp; contact ↓</span>
+      </div>
+      <div class="actions">
+        <button class="primary" data-open="0">WhatsApp</button>
+        <button data-open="2">Inventory</button>
+        <button data-open="7">Message</button>
+      </div>
+      <div class="hl-row" id="row"></div>
+      <div class="howto">
+        <b>Como ver</b>
+        <ul>
+          <li>Toque num destaque pra abrir os Stories</li>
+          <li>Toque à direita avança, à esquerda volta</li>
+          <li>Segure pra pausar e ler com calma</li>
+          <li>Arraste pra baixo ou toque no X pra fechar</li>
+        </ul>
+      </div>
+      <div class="tabs">
+        <div class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M9.2 3.5v17M14.8 3.5v17M3.5 9.2h17M3.5 14.8h17"/></svg></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M6.5 19c1.2-3 3.1-4.4 5.5-4.4s4.3 1.4 5.5 4.4"/></svg></div>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="foot">Destaques desenhados para a Intercar Auto Sales<br>pela <b>criativvo</b></div>
+
+      <div class="viewer" id="viewer" aria-hidden="true">
+        <div class="card" id="card">
+          <div class="frame">
+            <img class="story" id="story" src="img/everett/01.jpg" alt="">
+            <div class="bars" id="bars"></div>
+            <div class="vhead">
+              <div class="mini"><img src="img/logo.svg" alt=""></div>
+              <b>intercarautosales</b><em id="vname"></em>
+              <span class="sp"></span>
+              <button id="close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+            </div>
+            <div class="paused-tag">Pausado</div>
+            <div class="reply"><div>Send message</div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="desk-note"><b>Melhor no celular.</b><br>Abra este link no telefone pra ver os destaques no tamanho real. Aqui, clique nas laterais do Story pra navegar ou use as setas do teclado.</p>
+
+  <script>
+    const HIGHLIGHTS = [
+      ["Everett", "everett", 6, "01-everett"],
+      ["Peabody", "peabody", 6, "02-peabody"],
+      ["Inventory", "inventory", 5, "03-inventory"],
+      ["Financing", "financing", 5, "04-financing"],
+      ["Customers", "customers", 3, "05-customers"],
+      ["Trade-In", "trade-in", 4, "06-trade-in"],
+      ["Our Team", "our-team", 4, "07-our-team"],
+      ["FAQ", "faq", 6, "08-faq"]
+    ].map(([name, folder, count, cover]) => ({
+      name, cover: `img/capas/${cover}.jpg`,
+      stories: Array.from({ length: count }, (_, i) => `img/${folder}/${String(i + 1).padStart(2, "0")}.jpg`)
+    }));
+    const DURATION = 6500;
+
+    const $ = (id) => document.getElementById(id);
+    const phone = $("phone"), viewer = $("viewer"), card = $("card"), story = $("story"), bars = $("bars");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const seen = new Set();
+
+    // Fileira de destaques e grade com a primeira tela de cada um.
+    $("row").innerHTML = HIGHLIGHTS.map((h, i) => `<button class="hl new" data-open="${i}"><div class="ring"><img src="${h.cover}" alt=""></div><span>${h.name}</span></button>`).join("");
+    $("grid").innerHTML = HIGHLIGHTS.map((h, i) => `<button data-open="${i}" aria-label="${h.name}"><img loading="lazy" src="${h.stories[0]}" alt=""></button>`).join("");
+    document.querySelectorAll("[data-open]").forEach((el) => el.addEventListener("click", () => open(Number(el.dataset.open), el)));
+
+    let hi = 0, si = 0, elapsed = 0, last = 0, raf = 0, paused = false, isOpen = false;
+
+    function preload(src) { const im = new Image(); im.src = src; }
+
+    function show() {
+      const h = HIGHLIGHTS[hi];
+      story.src = h.stories[si];
+      $("vname").textContent = h.name;
+      bars.innerHTML = h.stories.map((_, i) => `<span><i style="transform:scaleX(${i < si ? 1 : 0})"></i></span>`).join("");
+      elapsed = 0;
+      const next = h.stories[si + 1] || (HIGHLIGHTS[hi + 1] && HIGHLIGHTS[hi + 1].stories[0]);
+      if (next) preload(next);
+    }
+
+    function tick(now) {
+      if (!isOpen) return;
+      if (!paused && story.complete) elapsed += now - last;
+      last = now;
+      const bar = bars.children[si] && bars.children[si].firstElementChild;
+      if (bar) bar.style.transform = `scaleX(${Math.min(elapsed / DURATION, 1)})`;
+      if (elapsed >= DURATION) next();
+      raf = requestAnimationFrame(tick);
+    }
+
+    function next() {
+      const h = HIGHLIGHTS[hi];
+      if (si < h.stories.length - 1) { si++; show(); return; }
+      seen.add(hi); markSeen();
+      if (hi < HIGHLIGHTS.length - 1) { hi++; si = 0; slide(1); return; }
+      close();
+    }
+    function prev() {
+      if (si > 0) { si--; show(); return; }
+      if (hi > 0) { hi--; si = HIGHLIGHTS[hi].stories.length - 1; slide(-1); return; }
+      show();
+    }
+    function slide(dir) {
+      if (reduce) { show(); return; }
+      card.animate([{ transform: `translateX(${dir * 22}%) scale(.96)`, opacity: .4 }, { transform: "none", opacity: 1 }], { duration: 320, easing: "cubic-bezier(.23,1,.32,1)" });
+      show();
+    }
+    function markSeen() {
+      document.querySelectorAll(".hl").forEach((el, i) => el.classList.toggle("new", !seen.has(i)));
+    }
+
+    function open(index, from) {
+      hi = index; si = 0; isOpen = true; paused = false;
+      viewer.classList.add("open"); viewer.setAttribute("aria-hidden", "false"); phone.classList.add("locked");
+      show();
+      // Abre a partir do círculo tocado: a origem do zoom é o destaque.
+      if (!reduce && from) {
+        const r = from.getBoundingClientRect(), v = viewer.getBoundingClientRect();
+        card.style.transformOrigin = `${r.left + r.width / 2 - v.left}px ${r.top + r.height / 2 - v.top}px`;
+        card.animate([{ transform: "scale(.2)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }], { duration: 340, easing: "cubic-bezier(.32,.72,0,1)" });
+      }
+      last = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(tick);
+    }
+    function close() {
+      if (!isOpen) return;
+      isOpen = false; seen.add(hi); markSeen();
+      const done = () => { viewer.classList.remove("open"); viewer.setAttribute("aria-hidden", "true"); phone.classList.remove("locked"); card.style.transform = ""; card.style.opacity = ""; };
+      if (reduce) { done(); return; }
+      const a = card.animate([{ transform: card.style.transform || "none", opacity: 1 }, { transform: "translateY(18%) scale(.86)", opacity: 0 }], { duration: 220, easing: "cubic-bezier(.23,1,.32,1)" });
+      a.onfinish = done;
+    }
+    $("close").addEventListener("click", (e) => { e.stopPropagation(); close(); });
+
+    // Toque: lado direito avança, esquerdo volta; segurar pausa; arrastar pra baixo fecha.
+    let down = null;
+    viewer.addEventListener("pointerdown", (e) => {
+      if (e.target.closest("#close")) return;
+      viewer.setPointerCapture(e.pointerId);
+      down = { x: e.clientX, y: e.clientY, t: performance.now(), dy: 0, moved: false };
+      paused = true;
+      down.holdTimer = setTimeout(() => viewer.classList.add("hold"), 260);
+    });
+    viewer.addEventListener("pointermove", (e) => {
+      if (!down) return;
+      const dy = e.clientY - down.y, dx = e.clientX - down.x;
+      if (!down.moved && Math.hypot(dx, dy) > 10) down.moved = true;
+      if (down.moved && dy > 0) {
+        down.dy = dy;
+        card.style.transform = `translateY(${dy}px) scale(${Math.max(.82, 1 - dy / 1400)})`;
+      }
+    });
+    viewer.addEventListener("pointerup", (e) => {
+      if (!down) return;
+      clearTimeout(down.holdTimer);
+      const held = performance.now() - down.t, d = down;
+      down = null; viewer.classList.remove("hold"); paused = false; last = performance.now();
+      const velocity = d.dy / Math.max(held, 1);
+      if (d.moved) {
+        if (d.dy > 120 || velocity > .6) { close(); return; }
+        card.animate([{ transform: card.style.transform }, { transform: "none" }], { duration: 260, easing: "cubic-bezier(.23,1,.32,1)" });
+        card.style.transform = "";
+        return;
+      }
+      if (held > 260) return;
+      const r = viewer.getBoundingClientRect();
+      (e.clientX - r.left < r.width * .3 ? prev : next)();
+    });
+    viewer.addEventListener("pointercancel", () => { if (down) clearTimeout(down.holdTimer); down = null; paused = false; viewer.classList.remove("hold"); card.style.transform = ""; });
+
+    document.addEventListener("keydown", (e) => {
+      if (!isOpen) return;
+      if (e.key === "ArrowRight") next();
+      else if (e.key === "ArrowLeft") prev();
+      else if (e.key === "Escape") close();
+      else if (e.key === " ") { e.preventDefault(); paused = !paused; last = performance.now(); viewer.classList.toggle("hold", paused); }
+    });
+    document.addEventListener("visibilitychange", () => { last = performance.now(); });
+  </script>
+</body>
+</html>
